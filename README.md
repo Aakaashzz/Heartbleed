@@ -9,7 +9,7 @@ The affected OpenSSL version range is from 1.0.1 to 1.0.1f. The version in the U
 The Heartbleed attack is based on the Heartbeat request. This request just sends some data to the server, and the server will copy the data to its response packet, so all the data are echoed back. In the normal case, suppose that the request includes 3 bytes of data ”ABC”, so the length field has a value 3. The server will place the data in the memory, and copy 3 bytes from the beginning of the data to its response packet. In the attack svcenario, the request may contain 3 bytes of data, but the length field may say 1003. When the server constructs its response packet, it copies from the starting of the data (i.e. “ABC”), but it copies 1003 bytes, instead of 3 bytes. These extra 1000 types obviously do not come from the request packet; they come from the server’s private memory, and they may contain other user’s information, secret keys, password, etc.
 
 <p align="center">
-    <img src="assets/heartbeat.png">
+    <img src="assests/heartbeat.png">
 </p>
 
 Next, change the length field of the request. First, let’s understand how the Heartbeat response packet is built from the figure above. When the Heartbeat request packet comes, the server will parse the packet to get the payload and the `Payload_length` value (which is highlighted above). Here, the payload is only a 3-byte string `"ABC"` and the `Payload_length` value is exactly 3. The server program will blindly take this length value from the request packet. It then builds the response packet by pointing to the memory storing `"ABC"` and copy `Payload_length` bytes to the response payload. In this way, the response packet would contain a 3-byte string `"ABC"`.
@@ -19,7 +19,7 @@ Next, launch the Heartbleed attack like what is shown in the figure below. Keep 
 The attack code allows the `Payload_length` value to change. By default, the value is set to a quite large one (0x4000), but it can reduced.
 
 <p align="center">
-    <img src="assets/heartbleed.png">
+    <img src="assests/heartbleed.png">
 </p>
 
 The easiest way to fix the Heartbleed vulnerability is to update the OpenSSL library to the newest version. However, the objective is to patch the vulnerability via the source code.
